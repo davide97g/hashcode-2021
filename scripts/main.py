@@ -1,4 +1,5 @@
 from progress.bar import ChargingBar
+import random
 
 files_name = ['a', 'b', 'c', 'd', 'e', 'f']
 
@@ -51,9 +52,9 @@ def solve(name, lines):
 
     avg_length = tot_length/len(streets)
     avg_requests = tot_requests/len(streets)
-    print("\ntotal length", tot_length, "average length", avg_length)
-    print("total requests", tot_requests,
-          "average requests", avg_requests)
+    # print("\ntotal length", tot_length, "average length", avg_length)
+    # print("total requests", tot_requests,
+    #       "average requests", avg_requests)
     # ? algorithm
     intersections_clean = {}
 
@@ -71,21 +72,39 @@ def solve(name, lines):
         for intersection, intersection_streets in intersections_clean.items():
             f.write(intersection+"\n")
             f.write(f"{len(intersection_streets)} \n")
-            highest_requests = max(
+            highest_request = max(
                 list(map(lambda s: streets[s]['requests'], intersection_streets)))
-            for street in intersection_streets:
+            lowest_request = min(
+                list(map(lambda s: streets[s]['requests'], intersection_streets)))
+
+            highest_length = max(
+                list(map(lambda s: streets[s]['length'], intersection_streets)))
+            lowest_length = min(
+                list(map(lambda s: streets[s]['length'], intersection_streets)))
+
+            for street in reversed(intersection_streets):
                 # time = 1
                 time = streets.get(street)['requests']
-                # if time >= D:
-                #     time = D - len(intersection_streets) - 1
-                if time >= avg_requests:
-                    time = round(3*avg_requests)
-                else:
-                    time = round(avg_requests)
-                if time == 0:
-                    time = 1
-                elif time >= D and len(intersection_streets) > 1:  # do not overflow
-                    time = D-1
+                length = streets.get(street)['length']
+                # ? fixed threshold for E test set
+                # if intersection == '499':
+                #     time = 1
+                # else:
+                #     time = round(1+random.uniform(0, 1))
+                # ? round from lowest
+                # time = round(time/lowest_request)
+                # ? average length
+                # if length <= avg_length:
+                #     time += 1
+                # elif time > 1:
+                #     time -= 1
+                # ? augmented average
+                # if time >= avg_requests:
+                #     time = round(3*avg_requests)
+                # else:
+                #     time = round(avg_requests)
+                # ? random variations
+                # time = round(time+random.uniform(0, avg_requests))
                 f.write(f"{street} {time}\n")
 
 
